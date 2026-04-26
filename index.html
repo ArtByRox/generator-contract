@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Contract Freelancer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ef;
+    --surface: #ffffff;
+    --border: #e0d9d0;
+    --accent: #1a1a2e;
+    --accent2: #c9a84c;
+    --text: #1a1a1a;
+    --muted: #8a8070;
+    --light: #f0ece4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    animation: fadeIn 0.7s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+
+  h1 em {
+    color: var(--accent2);
+    font-style: italic;
+  }
+
+  .subtitle {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+
+  /* STEPS */
+  .steps {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .step {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .step:last-child { border-right: none; }
+  .step.active { background: var(--accent); color: white; }
+  .step.done { color: var(--accent2); }
+
+  .step .num {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+    color: inherit;
+  }
+
+  /* FORM SECTIONS */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    display: none;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .section-sub {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .field { margin-bottom: 1.2rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.7rem 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--accent2); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  select { cursor: pointer; }
+
+  .type-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .type-btn {
+    padding: 0.8rem;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--muted);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    transition: all 0.2s;
+    border-right: 1px solid var(--border);
+  }
+
+  .type-btn:last-child { border-right: none; }
+  .type-btn.active { background: var(--accent); color: white; }
+
+  /* NAV BUTTONS */
+  .nav-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-back {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-next {
+    flex: 1;
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-next:hover { background: #2d2d4e; }
+
+  .btn-generate {
+    width: 100%;
+    background: var(--accent2);
+    border: none;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-generate:hover { background: #b8963e; transform: translateY(-1px); }
+
+  /* CONTRACT OUTPUT */
+  .contract-output {
+    display: none;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .contract-output.visible { display: block; }
+
+  .contract-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-print {
+    flex: 1;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-print:hover { background: #2d2d4e; }
+
+  .btn-new {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-new:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* CONTRACT DOCUMENT */
+  .contract-doc {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 3rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: #111;
+  }
+
+  .contract-doc h2 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+    color: var(--accent);
+  }
+
+  .contract-doc .contract-sub {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--accent2);
+  }
+
+  .contract-doc h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin: 1.8rem 0 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .contract-doc p { margin-bottom: 0.8rem; }
+
+  .contract-doc .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  .sig-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .sig-block { border-top: 1px solid #111; padding-top: 0.5rem; }
+  .sig-block .sig-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .sig-block .sig-name { font-weight: 600; margin-top: 0.3rem; }
+
+  .lang-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--accent2);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  /* AD */
+  .ad-slot {
+    border: 1px dashed var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2rem;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 560px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .contract-doc { padding: 1.5rem; }
+    .sig-row { grid-template-columns: 1fr; gap: 2rem; }
+    .steps { flex-direction: column; }
+    .step { border-right: none; border-bottom: 1px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .steps, header, .section, .contract-actions, .ad-slot, footer { display: none !important; }
+    .contract-output { display: block !important; }
+    .contract-doc { border: none; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="badge">✦ instrument gratuit</div>
+    <h1>Generator Contract<br><em>Freelancer</em></h1>
+    <p class="subtitle">Română · English — completează formularul, descarcă contractul</p>
+  </header>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step active" id="step-1"><span class="num">1</span>Părți</div>
+    <div class="step" id="step-2"><span class="num">2</span>Proiect</div>
+    <div class="step" id="step-3"><span class="num">3</span>Plată</div>
+    <div class="step" id="step-4"><span class="num">4</span>Contract</div>
+  </div>
+
+  <!-- SECTION 1: Părți -->
+  <div class="section active" id="sec-1">
+    <div class="section-title">Informații părți</div>
+    <div class="section-sub">Datele tale și ale clientului</div>
+
+    <div class="field">
+      <label>Tip serviciu</label>
+      <div class="type-toggle">
+        <button class="type-btn active" onclick="setType('it', this)">IT / Web / Design</button>
+        <button class="type-btn" onclick="setType('general', this)">Servicii generale</button>
+      </div>
+      <input type="hidden" id="tip-serviciu" value="it">
+    </div>
+
+    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:1rem;letter-spacing:0.05em;">— FREELANCER —</p>
+    <div class="grid-2">
+      <div class="field"><label>Nume complet</label><input type="text" id="f-nume" placeholder="Ion Popescu"></div>
+      <div class="field"><label>CNP / CUI</label><input type="text" id="f-cui" placeholder="1234567890123"></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Adresă</label><input type="text" id="f-adresa" placeholder="Str. Florilor 12, București"></div>
+      <div class="field"><label>Email</label><input type="email" id="f-email" placeholder="ion@email.com"></div>
+    </div>
+
+    <p style="font-size:0.72rem;color:var(--muted);margin:1.2rem 0 1rem;letter-spacing:0.05em;">— CLIENT —</p>
+    <div class="grid-2">
+      <div class="field"><label>Nume / Companie</label><input type="text" id="c-nume" placeholder="Firma SRL"></div>
+      <div class="field"><label>CUI / CNP</label><input type="text" id="c-cui" placeholder="RO12345678"></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Adresă</label><input type="text" id="c-adresa" placeholder="Str. Mare 1, Cluj"></div>
+      <div class="field"><label>Reprezentant legal</label><input type="text" id="c-rep" placeholder="Maria Ionescu"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" onclick="goTo(2)">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Proiect -->
+  <div class="section" id="sec-2">
+    <div class="section-title">Detalii proiect</div>
+    <div class="section-sub">Ce servicii vei presta</div>
+
+    <div class="field"><label>Titlu proiect</label><input type="text" id="p-titlu" placeholder="Dezvoltare site web / Logo / Consultanță..."></div>
+    <div class="field"><label>Descriere servicii</label><textarea id="p-desc" placeholder="Descrie pe scurt serviciile prestate..."></textarea></div>
+    <div class="grid-2">
+      <div class="field"><label>Data începere</label><input type="date" id="p-start"></div>
+      <div class="field"><label>Termen livrare</label><input type="date" id="p-end"></div>
+    </div>
+    <div class="field"><label>Nr. revizuiri incluse</label><input type="number" id="p-revizuiri" placeholder="2" min="0"></div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(1)">← Înapoi</button>
+      <button class="btn-next" onclick="goTo(3)">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Plată -->
+  <div class="section" id="sec-3">
+    <div class="section-title">Termeni de plată</div>
+    <div class="section-sub">Valoare și modalitate de plată</div>
+
+    <div class="grid-2">
+      <div class="field"><label>Valoare totală</label><input type="number" id="pl-valoare" placeholder="1500" min="0"></div>
+      <div class="field">
+        <label>Monedă</label>
+        <select id="pl-moneda">
+          <option value="RON">RON</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Modalitate plată</label>
+        <select id="pl-mod">
+          <option value="integral">Integral la semnare</option>
+          <option value="avans50">50% avans + 50% livrare</option>
+          <option value="avans30">30% avans + 70% livrare</option>
+          <option value="livrare">Integral la livrare</option>
+          <option value="lunar">Lunar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>TVA inclus</label>
+        <select id="pl-tva">
+          <option value="nu">Nu (fără TVA)</option>
+          <option value="da">Da (19% inclus)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>IBAN freelancer</label><input type="text" id="pl-iban" placeholder="RO49AAAA1B31007593840000"></div>
+    <div class="field"><label>Penalitate întârziere (%/zi)</label><input type="number" id="pl-penalitate" placeholder="0.1" step="0.1" min="0"></div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)">← Înapoi</button>
+      <button class="btn-next" onclick="goTo(4)">Continuă →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Preview + Generate -->
+  <div class="section" id="sec-4">
+    <div class="section-title">Generează contractul</div>
+    <div class="section-sub">Verifică datele și generează documentul bilingv</div>
+
+    <div id="summary" style="background:var(--light);padding:1.2rem;font-size:0.8rem;line-height:2;color:var(--muted);"></div>
+
+    <button class="btn-generate" onclick="genereaza()">✦ Generează Contractul / Generate Contract</button>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(3)">← Înapoi</button>
+    </div>
+  </div>
+
+  <!-- CONTRACT OUTPUT -->
+  <div class="contract-output" id="contract-output">
+    <div class="contract-actions">
+      <button class="btn-print" onclick="window.print()">⬇ Printează / Save as PDF</button>
+      <button class="btn-new" onclick="resetForm()">← Contract nou</button>
+    </div>
+
+    <div class="contract-doc" id="contract-doc"></div>
+  </div>
+
+  <div class="ad-slot">Spațiu publicitar — Google AdSense</div>
+
+  <footer>generator-contract-freelancer.ro &nbsp;·&nbsp; toate drepturile rezervate</footer>
+</div>
+
+<script>
+  let currentStep = 1;
+  let serviceType = 'it';
+
+  function setType(type, btn) {
+    serviceType = type;
+    document.getElementById('tip-serviciu').value = type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function goTo(step) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.step').forEach(s => { s.classList.remove('active'); });
+    document.getElementById('sec-' + step).classList.add('active');
+    document.getElementById('step-' + step).classList.add('active');
+
+    for (let i = 1; i < step; i++) {
+      document.getElementById('step-' + i).classList.add('done');
+    }
+
+    if (step === 4) buildSummary();
+    currentStep = step;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function g(id) { return document.getElementById(id).value || '___'; }
+
+  function buildSummary() {
+    const modMap = {
+      'integral': 'Integral la semnare',
+      'avans50': '50% avans + 50% la livrare',
+      'avans30': '30% avans + 70% la livrare',
+      'livrare': 'Integral la livrare',
+      'lunar': 'Lunar'
+    };
+    document.getElementById('summary').innerHTML = `
+      <strong>Freelancer:</strong> ${g('f-nume')} &nbsp;|&nbsp; <strong>Client:</strong> ${g('c-nume')}<br>
+      <strong>Proiect:</strong> ${g('p-titlu')} &nbsp;|&nbsp; <strong>Perioadă:</strong> ${g('p-start')} → ${g('p-end')}<br>
+      <strong>Valoare:</strong> ${g('pl-valoare')} ${g('pl-moneda')} &nbsp;|&nbsp; <strong>Plată:</strong> ${modMap[g('pl-mod')] || g('pl-mod')}
+    `;
+  }
+
+  function getPlataText(mod, valoare, moneda) {
+    const v = valoare;
+    const m = moneda;
+    const half = (parseFloat(valoare) / 2).toFixed(0);
+    const third = (parseFloat(valoare) * 0.3).toFixed(0);
+    const rest7 = (parseFloat(valoare) * 0.7).toFixed(0);
+    const map = {
+      'integral': `Valoarea totală de ${v} ${m} se achită integral la semnarea prezentului contract.`,
+      'avans50': `Se achită un avans de ${half} ${m} (50%) la semnarea contractului, iar restul de ${half} ${m} la livrarea finală.`,
+      'avans30': `Se achită un avans de ${third} ${m} (30%) la semnarea contractului, iar restul de ${rest7} ${m} la livrarea finală.`,
+      'livrare': `Valoarea totală de ${v} ${m} se achită integral la livrarea și acceptarea lucrării.`,
+      'lunar': `Valoarea de ${v} ${m} se achită lunar, conform graficului convenit între părți.`
+    };
+    return map[mod] || `${v} ${m}`;
+  }
+
+  function getPlataTextEN(mod, valoare, moneda) {
+    const v = valoare;
+    const m = moneda;
+    const half = (parseFloat(valoare) / 2).toFixed(0);
+    const third = (parseFloat(valoare) * 0.3).toFixed(0);
+    const rest7 = (parseFloat(valoare) * 0.7).toFixed(0);
+    const map = {
+      'integral': `The total amount of ${v} ${m} is due in full upon signing this agreement.`,
+      'avans50': `A deposit of ${half} ${m} (50%) is due upon signing, with the remaining ${half} ${m} due upon final delivery.`,
+      'avans30': `A deposit of ${third} ${m} (30%) is due upon signing, with the remaining ${rest7} ${m} due upon final delivery.`,
+      'livrare': `The total amount of ${v} ${m} is due upon delivery and acceptance of the work.`,
+      'lunar': `The amount of ${v} ${m} is payable monthly, according to a schedule agreed upon by both parties.`
+    };
+    return map[mod] || `${v} ${m}`;
+  }
+
+  function getServiceClause(type) {
+    if (type === 'it') return `Prestatorul se obligă să dezvolte, să proiecteze sau să implementeze serviciile descrise, folosind tehnologii și practici conforme cu standardele industriei. Toate drepturile de proprietate intelectuală asupra livrabilelor finale trec la Client la data achitării integrale a contravalorii contractului.`;
+    return `Prestatorul se obligă să execute serviciile descrise cu diligența unui profesionist, respectând toate cerințele și specificațiile agreate cu Beneficiarul.`;
+  }
+
+  function getServiceClauseEN(type) {
+    if (type === 'it') return `The Service Provider agrees to develop, design, or implement the described services using technologies and practices consistent with industry standards. All intellectual property rights over the final deliverables transfer to the Client upon full payment of the contract value.`;
+    return `The Service Provider agrees to perform the described services with professional diligence, meeting all requirements and specifications agreed upon with the Client.`;
+  }
+
+  function genereaza() {
+    const fNume = g('f-nume'), fCui = g('f-cui'), fAdresa = g('f-adresa'), fEmail = g('f-email');
+    const cNume = g('c-nume'), cCui = g('c-cui'), cAdresa = g('c-adresa'), cRep = g('c-rep');
+    const pTitlu = g('p-titlu'), pDesc = g('p-desc'), pStart = g('p-start'), pEnd = g('p-end'), pRev = g('p-revizuiri');
+    const plVal = g('pl-valoare'), plMon = g('pl-moneda'), plMod = g('pl-mod'), plTva = g('pl-tva'), plIban = g('pl-iban'), plPen = g('pl-penalitate');
+    const today = new Date().toLocaleDateString('ro-RO');
+    const todayEN = new Date().toLocaleDateString('en-GB');
+    const type = serviceType;
+
+    const plataRO = getPlataText(plMod, plVal, plMon);
+    const plataEN = getPlataTextEN(plMod, plVal, plMon);
+    const tvaRO = plTva === 'da' ? 'Prețul include TVA de 19%.' : 'Prețul nu include TVA (prestator neplătitor de TVA).';
+    const tvaEN = plTva === 'da' ? 'The price includes 19% VAT.' : 'The price does not include VAT (provider not VAT registered).';
+
+    document.getElementById('contract-doc').innerHTML = `
+      <!-- RO -->
+      <span class="lang-tag">Română</span>
+      <h2>CONTRACT DE PRESTĂRI SERVICII</h2>
+      <div class="contract-sub">Nr. ___ / ${today}</div>
+
+      <h3>1. Părțile contractante</h3>
+      <p><strong>Prestator:</strong> ${fNume}, identificat prin CNP/CUI ${fCui}, cu adresa în ${fAdresa}, email: ${fEmail}, denumit în continuare <em>„Prestator"</em>.</p>
+      <p><strong>Beneficiar:</strong> ${cNume}, identificat prin CUI/CNP ${cCui}, cu sediul în ${cAdresa}, reprezentat legal de ${cRep}, denumit în continuare <em>„Beneficiar"</em>.</p>
+
+      <h3>2. Obiectul contractului</h3>
+      <p>Prestatorul se obligă să presteze servicii de <strong>${pTitlu}</strong>, conform descrierii: ${pDesc}</p>
+      <p>${getServiceClause(type)}</p>
+
+      <h3>3. Durata contractului</h3>
+      <p>Contractul intră în vigoare la data de <strong>${pStart}</strong> și se finalizează la data de <strong>${pEnd}</strong>. Numărul de revizuiri incluse: <strong>${pRev}</strong>. Revizuirile suplimentare se tarifează separat, conform tarifului orar convenit.</p>
+
+      <h3>4. Valoarea contractului și modalitatea de plată</h3>
+      <p>Valoarea totală a contractului este de <strong>${plVal} ${plMon}</strong>. ${tvaRO}</p>
+      <p>${plataRO}</p>
+      <p>Plata se efectuează prin transfer bancar în contul IBAN: <strong>${plIban}</strong>.</p>
+      ${parseFloat(plPen) > 0 ? `<p>Întârzierea la plată atrage penalități de <strong>${plPen}%/zi</strong> din suma datorată.</p>` : ''}
+
+      <h3>5. Obligațiile prestatorului</h3>
+      <p>Prestatorul se obligă să execute lucrările la standardele convenite, să respecte termenele agreate și să comunice în timp util orice dificultăți care pot afecta livrarea.</p>
+
+      <h3>6. Obligațiile beneficiarului</h3>
+      <p>Beneficiarul se obligă să furnizeze în timp util toate materialele, accesurile și informațiile necesare executării contractului, și să efectueze plățile la termenele convenite.</p>
+
+      <h3>7. Confidențialitate</h3>
+      <p>Ambele părți se obligă să păstreze confidențialitatea informațiilor obținute în cadrul prezentului contract pe durata acestuia și timp de 2 ani de la încetarea sa.</p>
+
+      <h3>8. Forța majoră</h3>
+      <p>Niciuna dintre părți nu va fi răspunzătoare pentru neexecutarea obligațiilor contractuale cauzată de evenimente de forță majoră, notificate în scris în termen de 5 zile de la producere.</p>
+
+      <h3>9. Litigii</h3>
+      <p>Orice litigiu izvorât din prezentul contract va fi soluționat pe cale amiabilă. În caz contrar, competența revine instanțelor judecătorești de la sediul Prestatorului.</p>
+
+      <h3>10. Dispoziții finale</h3>
+      <p>Prezentul contract a fost încheiat în 2 (două) exemplare originale, câte unul pentru fiecare parte.</p>
+
+      <div class="sig-row">
+        <div class="sig-block">
+          <div class="sig-label">Prestator</div>
+          <div class="sig-name">${fNume}</div>
+          <div style="margin-top:2rem;font-size:0.75rem;color:#aaa;">Semnătură / Data</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-label">Beneficiar</div>
+          <div class="sig-name">${cNume}</div>
+          <div style="margin-top:2rem;font-size:0.75rem;color:#aaa;">Semnătură / Data</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- EN -->
+      <span class="lang-tag">English</span>
+      <h2>SERVICE AGREEMENT</h2>
+      <div class="contract-sub">No. ___ / ${todayEN}</div>
+
+      <h3>1. Parties</h3>
+      <p><strong>Service Provider:</strong> ${fNume}, identified by ID/Tax No. ${fCui}, address: ${fAdresa}, email: ${fEmail}, hereinafter referred to as <em>"Provider"</em>.</p>
+      <p><strong>Client:</strong> ${cNume}, identified by Tax No./ID ${cCui}, address: ${cAdresa}, represented by ${cRep}, hereinafter referred to as <em>"Client"</em>.</p>
+
+      <h3>2. Scope of Work</h3>
+      <p>The Provider agrees to deliver services for <strong>${pTitlu}</strong>, as described: ${pDesc}</p>
+      <p>${getServiceClauseEN(type)}</p>
+
+      <h3>3. Timeline</h3>
+      <p>This agreement commences on <strong>${pStart}</strong> and concludes on <strong>${pEnd}</strong>. Number of revisions included: <strong>${pRev}</strong>. Additional revisions will be billed at the agreed hourly rate.</p>
+
+      <h3>4. Payment Terms</h3>
+      <p>The total contract value is <strong>${plVal} ${plMon}</strong>. ${tvaEN}</p>
+      <p>${plataEN}</p>
+      <p>Payment shall be made via bank transfer to IBAN: <strong>${plIban}</strong>.</p>
+      ${parseFloat(plPen) > 0 ? `<p>Late payments will incur a penalty of <strong>${plPen}%/day</strong> on the outstanding amount.</p>` : ''}
+
+      <h3>5. Provider Obligations</h3>
+      <p>The Provider agrees to deliver work to the agreed standards, meet agreed deadlines, and promptly communicate any issues that may affect delivery.</p>
+
+      <h3>6. Client Obligations</h3>
+      <p>The Client agrees to provide all necessary materials, access, and information in a timely manner, and to make payments on the agreed schedule.</p>
+
+      <h3>7. Confidentiality</h3>
+      <p>Both parties agree to keep confidential all information obtained under this agreement during its term and for 2 years following termination.</p>
+
+      <h3>8. Force Majeure</h3>
+      <p>Neither party shall be liable for failure to perform obligations caused by force majeure events, provided written notice is given within 5 days of the event.</p>
+
+      <h3>9. Disputes</h3>
+      <p>Any dispute arising from this agreement shall first be resolved amicably. Failing that, disputes shall be submitted to the courts having jurisdiction at the Provider's place of business.</p>
+
+      <h3>10. General Provisions</h3>
+      <p>This agreement has been signed in 2 (two) original copies, one for each party.</p>
+
+      <div class="sig-row">
+        <div class="sig-block">
+          <div class="sig-label">Service Provider</div>
+          <div class="sig-name">${fNume}</div>
+          <div style="margin-top:2rem;font-size:0.75rem;color:#aaa;">Signature / Date</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-label">Client</div>
+          <div class="sig-name">${cNume}</div>
+          <div style="margin-top:2rem;font-size:0.75rem;color:#aaa;">Signature / Date</div>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('.section, .steps').forEach(el => el.style.display = 'none');
+    document.getElementById('contract-output').classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    document.getElementById('contract-output').classList.remove('visible');
+    document.querySelectorAll('.section, .steps').forEach(el => el.style.display = '');
+    goTo(1);
+  }
+
+  // Set today as default start date
+  document.getElementById('p-start').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
